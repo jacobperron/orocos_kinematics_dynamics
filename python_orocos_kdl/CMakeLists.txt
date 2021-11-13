@@ -8,6 +8,11 @@ endif()
 
 project(python_orocos_kdl VERSION 1.5.1)
 
+option(FORCE_BUILD_PYBIND11
+  "Build pybind11 from source, even if system-installed package is available"
+  OFF
+)
+
 # find a matching version of orocos_kdl
 find_package(orocos_kdl ${PROJECT_VERSION} EXACT REQUIRED)
 include_directories(${orocos_kdl_INCLUDE_DIRS})
@@ -46,7 +51,18 @@ else()
   set(PYTHON_MODULE_EXTENSION ".so")
 endif()
 
-add_subdirectory(pybind11)
+if(FORCE_BUILD_PYBIND11)
+  message(STATUS "Forcing pybind11 to build from source")
+  add_subdirectory(pybind11)
+else()
+  # Use system version of pybind11 if it is available
+  # Otherwise, build from source
+  find_package(pybind11 QUIET)
+  if(NOT pybind11_FOUND)
+    message(STATUS "pybind11 not found, building from source")
+    add_subdirectory(pybind11)
+  endif()
+endif()
 pybind11_add_module(${LIBRARY_NAME}
   PyKDL/PyKDL.h
   PyKDL/PyKDL.cpp
