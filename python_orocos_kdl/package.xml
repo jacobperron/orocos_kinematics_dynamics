@@ -20,6 +20,7 @@
 
   <depend condition="$ROS_PYTHON_VERSION == 2">python</depend>
   <depend condition="$ROS_PYTHON_VERSION == 3">python3</depend>
+  <depend condition="$ROS_VERSION == 2">pybind11_vendor</depend>
 
   <exec_depend>catkin</exec_depend>
   <exec_depend>orocos_kdl</exec_depend>
